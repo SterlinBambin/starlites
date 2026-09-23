@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="Starlites Blue U16 and Orange U19 basketball fixtures, 2026–27.">
+<title>Starlites Game Days</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400;500;600;700;800&family=Funnel+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#f2f2f7; --surface:#ffffff; --ink:#1c1c1e; --muted:#6e6e76; --faint:#aeaeb4; --sep:rgba(60,60,67,.14);
+  --blue:#1f5bd8; --blue-soft:rgba(31,91,216,.10);
+  --orange:#FF5F1F; --orange-soft:rgba(255,95,31,.11);
+  --accent:var(--ink);
+  --chrome:rgba(242,242,247,.72); --chrome-edge:rgba(255,255,255,.55);
+  --thumb:#ffffff; --thumb-shadow:0 1px 2px rgba(0,0,0,.08),0 3px 10px rgba(0,0,0,.08);
+  --track:rgba(118,118,128,.12);
+  --display:"Funnel Display","Funnel Sans",system-ui,-apple-system,sans-serif;
+  --text:"Funnel Sans",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#000000; --surface:#1c1c1e; --ink:#f5f5f7; --muted:#98989f; --faint:#5c5c62; --sep:rgba(84,84,88,.5);
+    --blue:#5b8cff; --blue-soft:rgba(91,140,255,.16);
+    --orange:#FF5F1F; --orange-soft:rgba(255,95,31,.18);
+    --chrome:rgba(18,18,20,.7); --chrome-edge:rgba(255,255,255,.07);
+    --thumb:#636366; --thumb-shadow:0 1px 3px rgba(0,0,0,.4);
+    --track:rgba(118,118,128,.24);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#000000; --surface:#1c1c1e; --ink:#f5f5f7; --muted:#98989f; --faint:#5c5c62; --sep:rgba(84,84,88,.5);
+  --blue:#5b8cff; --blue-soft:rgba(91,140,255,.16);
+  --orange:#FF5F1F; --orange-soft:rgba(255,95,31,.18);
+  --chrome:rgba(18,18,20,.7); --chrome-edge:rgba(255,255,255,.07);
+  --thumb:#636366; --thumb-shadow:0 1px 3px rgba(0,0,0,.4);
+  --track:rgba(118,118,128,.24);
+}
+body.t-u16{--accent:var(--blue)} body.t-u19{--accent:var(--orange)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:400 1rem/1.47 var(--text);letter-spacing:-.005em;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:680px;margin:0 auto;padding-inline:16px;padding-block:8px 56px}
+
+/* Large title */
+header{padding-block:28px 14px}
+.eyebrow{font:600 .8125rem/1.2 var(--text);color:var(--muted);letter-spacing:0}
+h1{font:800 clamp(2.125rem,7.5vw,3rem)/1.02 var(--display);letter-spacing:-.035em;margin:6px 0 0;text-wrap:balance}
+h1 .b{color:var(--blue)} h1 .o{color:var(--orange)}
+.sub{color:var(--muted);margin:10px 0 0;font-size:.9375rem}
+
+/* Translucent sticky segmented control */
+.chrome{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;margin-inline:-16px;padding:10px 16px;
+  background:var(--chrome);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+  transition:box-shadow .25s ease}
+.chrome.scrolled{box-shadow:0 .5px 0 var(--sep)}
+.seg{position:relative;display:grid;grid-template-columns:repeat(3,1fr);background:var(--track);border-radius:11px;padding:2px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.seg .thumb{position:absolute;top:2px;bottom:2px;left:2px;width:calc((100% - 4px)/3);border-radius:9px;background:var(--thumb);box-shadow:var(--thumb-shadow);will-change:transform}
+.seg button{position:relative;z-index:1;font:600 .875rem/1 var(--text);letter-spacing:-.005em;border:0;background:transparent;color:var(--ink);padding:9px 6px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .12s ease}
+.seg button:active{opacity:.55;transition:opacity 0s}
+.seg button[aria-selected="false"]{font-weight:500}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dot.u16{background:var(--blue)} .dot.u19{background:var(--orange)}
+.pair{display:inline-flex}.pair .dot+.dot{margin-left:-3px;box-shadow:0 0 0 1.5px var(--thumb)}
+
+/* Content */
+#content{display:flex;flex-direction:column;gap:26px;padding-top:14px}
+#content.fade{animation:fade .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* Next game card */
+.hero{border-radius:22px;padding:22px 22px 18px;display:grid;gap:14px;color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,var(--h1),var(--h2));box-shadow:0 10px 30px -12px var(--h2)}
+.hero.u16{--h1:#2f6bf0;--h2:#123a9e} .hero.u19{--h1:#FF5F1F;--h2:#c2380a}
+.hero::after{content:"";position:absolute;right:-60px;top:-80px;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.22),rgba(255,255,255,0) 70%);pointer-events:none}
+.hero .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hero .label{font:600 .8125rem/1 var(--text);color:rgba(255,255,255,.82)}
+.chip{font:600 .75rem/1 var(--text);letter-spacing:.01em;padding:6px 9px;border-radius:999px;background:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.hero .when{font:700 clamp(1.75rem,6.4vw,2.375rem)/1.05 var(--display);letter-spacing:-.03em}
+.hero .vs{font:500 1.0625rem/1.35 var(--text);color:rgba(255,255,255,.92)}
+.countdown{display:flex;gap:8px}
+.cd{flex:1;max-width:92px;background:rgba(255,255,255,.16);border-radius:14px;padding:10px 8px 8px;text-align:center}
+.cd strong{display:block;font:700 1.75rem/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.cd small{font:500 .6875rem/1 var(--text);color:rgba(255,255,255,.78);letter-spacing:.02em}
+.actions{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
+.btn{display:inline-flex;align-items:center;gap:6px;font:600 .9375rem/1 var(--text);padding:12px 16px;border-radius:999px;text-decoration:none;transition:transform .18s cubic-bezier(.2,.8,.2,1),opacity .18s}
+.btn:active{transform:scale(.96);opacity:.85;transition-duration:.08s}
+.btn.light{background:#fff;color:#1c1c1e}
+.btn.glass{color:#fff;background:rgba(255,255,255,.18)}
+
+/* List header */
+.lhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-inline:4px}
+.lhead h2{font:700 1.375rem/1.1 var(--display);letter-spacing:-.025em;margin:0}
+.lhead h2 small{display:block;font:500 .8125rem/1.3 var(--text);letter-spacing:0;color:var(--muted);margin-top:3px}
+.toggle{font:600 .9375rem/1 var(--text);color:var(--accent);background:none;border:0;padding:6px 0;cursor:pointer;transition:opacity .1s}
+.toggle:active{opacity:.4;transition:none}
+
+/* Inset grouped list */
+.group{display:flex;flex-direction:column;gap:6px}
+.group h3{font:600 .8125rem/1 var(--text);color:var(--muted);margin:10px 0 2px;padding-inline:18px}
+ol.list{list-style:none;margin:0;padding:0;background:var(--surface);border-radius:16px;overflow:hidden}
+.game{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:12px 16px;position:relative;transition:background-color .2s}
+.game + .game::before{content:"";position:absolute;top:0;right:0;left:74px;height:.5px;background:var(--sep)}
+.game.u16{--c:var(--blue);--cs:var(--blue-soft)} .game.u19{--c:var(--orange);--cs:var(--orange-soft)}
+.date{display:grid;justify-items:center;line-height:1}
+.date .dow{font:600 .6875rem/1 var(--text);color:var(--c);letter-spacing:.02em}
+.date .d{font:700 1.625rem/1 var(--display);letter-spacing:-.03em;margin-top:3px;font-variant-numeric:tabular-nums}
+.info{min-width:0}
+.opp{font:600 1rem/1.3 var(--text);letter-spacing:-.01em;overflow-wrap:anywhere}
+.meta{color:var(--muted);font-size:.8125rem;display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.pill{font:600 .6875rem/1 var(--text);padding:4px 7px;border-radius:999px;letter-spacing:.01em}
+.pill.home{background:var(--cs);color:var(--c)}
+.pill.away{background:var(--track);color:var(--muted)}
+.pill.team{color:var(--c);padding-left:0;display:inline-flex;align-items:center;gap:5px}
+.pill.team::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c)}
+.pill.next{background:var(--c);color:#fff}
+.right{display:grid;justify-items:end;gap:6px}
+.time{font:600 1.125rem/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.cal{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--cs);color:var(--c);text-decoration:none;font:500 1.125rem/1 var(--text);transition:transform .15s cubic-bezier(.2,.8,.2,1)}
+.cal:active{transform:scale(.88);transition-duration:.06s}
+.game.is-next{background:var(--cs)}
+.game.is-past{opacity:.42}
+.empty{padding:18px;color:var(--muted);text-align:center}
+
+footer{color:var(--muted);font-size:.8125rem;line-height:1.55;padding-inline:4px;margin-top:6px}
+footer a{color:var(--accent);text-decoration:none;font-weight:600}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+body.t-both a:focus-visible,body.t-both button:focus-visible{outline-color:var(--blue)}
+
+@media (max-width:400px){ .game{gap:12px;padding:11px 14px} .game + .game::before{left:70px} }
+@media (prefers-reduced-motion:reduce){ #content.fade{animation:fadeonly .2s ease} @keyframes fadeonly{from{opacity:0}to{opacity:1}} .btn,.cal{transition:none} }
+@media (prefers-reduced-transparency:reduce){ .chrome{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none} }
+@media (prefers-contrast:more){ .seg{box-shadow:inset 0 0 0 1px var(--muted)} ol.list{box-shadow:0 0 0 1px var(--muted)} }
+</style>
+<style>html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Malta Basketball · 2026–27</div>
+    <h1>Starlites <span class="b">Blue U16</span> &amp; <span class="o">Orange U19</span></h1>
+    <p class="sub">Every league game — all at Ta' Qali Pavilion.</p>
+  </header>
+
+  <div class="chrome" id="chrome">
+    <div class="seg" role="tablist" aria-label="Team" id="seg">
+      <div class="thumb" id="thumb" aria-hidden="true"></div>
+      <button role="tab" id="tab-both" data-t="both"><span class="pair"><span class="dot u16"></span><span class="dot u19"></span></span>Both</button>
+      <button role="tab" id="tab-u16" data-t="u16"><span class="dot u16"></span>U16 Blue</button>
+      <button role="tab" id="tab-u19" data-t="u19"><span class="dot u19"></span>U19 Orange</button>
+    </div>
+  </div>
+
+  <div id="content">
+    <section class="hero" id="hero" aria-live="polite"></section>
+    <div class="group">
+      <div class="lhead">
+        <h2 id="list-title">Fixtures</h2>
+        <button type="button" class="toggle" id="toggle"></button>
+      </div>
+      <div id="list"></div>
+    </div>
+    <footer>
+      Times are Malta local time. Fixtures can move — check the official MBA schedules for
+      <a href="https://maltabasketball.web.geniussports.com/?p=9&WHurl=%2Fcompetition%2F49763%2Fteam%2F165557%2Fschedule%3F" target="_blank" rel="noopener">U16 Boys</a> and
+      <a href="https://maltabasketball.web.geniussports.com/competitions/?WHurl=%2Fcompetition%2F49770%2Fschedule" target="_blank" rel="noopener">U19 Men Div B</a>
+      before heading out. Last pulled 23 Sep 2026.
+    </footer>
+  </div>
+</div>
+
+<script>
+const VENUE = "Ta' Qali Pavilion";
+const TEAMS = {
+  u16:{name:"Starlites Blue U16", short:"U16 Blue", comp:"Pisani Motoring School U16 Boys"},
+  u19:{name:"Starlites Orange U19", short:"U19 Orange", comp:"St. James Hospital U19 Men Div B"},
+};
+const ORDER=["both","u16","u19"];
+// [team, date, time, home?, opponent]
+const RAW = [
+  ["u16","2026-10-11","09:45",true ,"Depiro Mazda U16B"],
+  ["u16","2026-10-25","09:45",true ,"Hibernians U16 Boys A"],
+  ["u16","2026-11-07","08:00",false,"Luxol Bolt U16 Boys A"],
+  ["u16","2026-12-05","09:45",true ,"Athleta AtoZ U16 Boys A"],
+  ["u16","2026-12-19","08:00",false,"Depiro Mazda U16B"],
+  ["u16","2027-01-16","09:45",false,"Hibernians U16 Boys A"],
+  ["u16","2027-01-30","09:45",true ,"Luxol Bolt U16 Boys A"],
+  ["u16","2027-03-06","08:00",false,"Athleta AtoZ U16 Boys A"],
+  ["u19","2026-10-01","18:15",true ,"Hibernians U19M Div B"],
+  ["u19","2026-10-08","20:00",false,"Luxol St. Andrew's Bolt U19M"],
+  ["u19","2026-10-15","18:15",true ,"Luxol Vjola Bolt U19M"],
+  ["u19","2026-11-04","20:00",false,"Mellieha Dream U19M"],
+  ["u19","2026-11-26","20:00",true ,"Starlites White U19M"],
+  ["u19","2026-12-03","18:15",false,"Athleta AtoZ U19M Div B"],
+  ["u19","2026-12-08","14:00",true ,"Athleta U19 Men"],
+  ["u19","2026-12-10","18:15",false,"Depiro Blue Mazda U19 Men"],
+  ["u19","2027-01-07","18:15",false,"Hibernians U19M Div B"],
+  ["u19","2027-01-14","20:00",true ,"Luxol St. Andrew's Bolt U19M"],
+  ["u19","2027-02-03","20:00",false,"Luxol Vjola Bolt U19M"],
+  ["u19","2027-02-10","11:45",true ,"Mellieha Dream U19M"],
+  ["u19","2027-03-03","20:00",false,"Starlites White U19M"],
+  ["u19","2027-03-19","09:15",true ,"Athleta AtoZ U19M Div B"],
+  ["u19","2027-03-25","20:00",false,"Athleta U19 Men"],
+  ["u19","2027-03-31","10:30",true ,"Depiro Blue Mazda U19 Men"],
+];
+const GAMES = RAW.map(([team,d,t,home,opp])=>{
+  const [y,mo,da]=d.split("-").map(Number), [h,mi]=t.split(":").map(Number);
+  // Malta: CEST (UTC+2) until 25 Oct 2026, CET (UTC+1) until 28 Mar 2027, then CEST
+  const off=(d<"2026-10-25"||d>="2027-03-28")?2:1;
+  return {team,d,t,home,opp,y,mo,da,start:new Date(Date.UTC(y,mo-1,da,h-off,mi))};
+}).sort((a,b)=>a.start-b.start);
+
+const DOW=["SUN","MON","TUE","WED","THU","FRI","SAT"];
+const DOWL=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MONL=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const MONS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const wd=g=>new Date(Date.UTC(g.y,g.mo-1,g.da)).getUTCDay();
+const over=(g,now)=>g.start.getTime()+2*3600e3<=now.getTime();
+
+function calLink(g){
+  const p=n=>String(n).padStart(2,"0");
+  const [h,m]=g.t.split(":").map(Number), end=h*60+m+90;
+  const day=`${g.y}${p(g.mo)}${p(g.da)}`, me=TEAMS[g.team].name;
+  const title=g.home?`${me} vs ${g.opp}`:`${g.opp} vs ${me}`;
+  const q=new URLSearchParams({action:"TEMPLATE",text:"🏀 "+title,dates:`${day}T${p(h)}${p(m)}00/${day}T${p(Math.floor(end/60))}${p(end%60)}00`,ctz:"Europe/Malta",location:VENUE+", Ta' Qali, Malta",details:TEAMS[g.team].comp+" league game. Check the official MBA schedule for changes."});
+  return "https://calendar.google.com/calendar/render?"+q.toString();
+}
+
+let tab="both", filter="up";
+try{
+  const s=localStorage.getItem("sl-tab"); if(ORDER.includes(s)) tab=s;
+  const f=localStorage.getItem("sl-filter"); if(f==="up"||f==="all") filter=f;
+}catch(e){}
+const hsh=(location.hash||"").slice(1); if(ORDER.includes(hsh)) tab=hsh;
+
+/* ---------- Critically damped spring for the segment thumb (interruptible, velocity-preserving) ---------- */
+const reduce=matchMedia("(prefers-reduced-motion: reduce)");
+const thumb=document.getElementById("thumb"), seg=document.getElementById("seg");
+const spring={x:0,v:0,target:0,raf:0};
+function segW(){ return (seg.clientWidth-4)/3; }
+function setThumb(x){ spring.x=x; thumb.style.transform=`translateX(${x}px)`; }
+function animateThumb(target,{bounce=false}={}){
+  spring.target=target;
+  if(reduce.matches){ setThumb(target); spring.v=0; return; }
+  // Apple params: response 0.35s, damping 1.0 (0.8 after a flick)
+  const response=.35, damping=bounce?.8:1;
+  const k=Math.pow(2*Math.PI/response,2), c=4*Math.PI*damping/response;
+  cancelAnimationFrame(spring.raf);
+  let last=performance.now();
+  const step=now=>{
+    const dt=Math.min(.032,(now-last)/1000); last=now;
+    const a=-k*(spring.x-spring.target)-c*spring.v;
+    spring.v+=a*dt; setThumb(spring.x+spring.v*dt);
+    if(Math.abs(spring.v)<2 && Math.abs(spring.x-spring.target)<.3){ setThumb(spring.target); spring.v=0; return; }
+    spring.raf=requestAnimationFrame(step);
+  };
+  spring.raf=requestAnimationFrame(step);
+}
+
+/* Drag the thumb 1:1, rubber-band at edges, project momentum on release */
+function rubber(o,dim,c=.55){ return (o*dim*c)/(dim+c*Math.abs(o)); }
+let drag=null;
+seg.addEventListener("pointerdown",e=>{
+  if(e.button!==0) return;
+  const btn=e.target.closest("button"); if(!btn) return;
+  const w=segW(), idx=ORDER.indexOf(btn.dataset.t);
+  // Only a grab on the selected segment starts a thumb drag; other segments are taps
+  if(idx!==ORDER.indexOf(tab)) return;
+  cancelAnimationFrame(spring.raf);
+  drag={id:e.pointerId,startX:e.clientX,from:spring.x,hist:[[e.timeStamp,e.clientX]],moved:false,w};
+});
+seg.addEventListener("pointermove",e=>{
+  if(!drag||e.pointerId!==drag.id) return;
+  const dx=e.clientX-drag.startX;
+  if(!drag.moved && Math.abs(dx)<8) return;
+  if(!drag.moved){ drag.moved=true; seg.setPointerCapture(e.pointerId); }
+  let x=drag.from+dx, max=drag.w*2;
+  if(x<0) x=rubber(x,drag.w); else if(x>max) x=max+rubber(x-max,drag.w);
+  setThumb(x);
+  drag.hist.push([e.timeStamp,e.clientX]); if(drag.hist.length>5) drag.hist.shift();
+});
+function endDrag(e){
+  if(!drag||e.pointerId!==drag.id) return;
+  const d=drag; drag=null;
+  if(!d.moved) return;
+  const [t0,x0]=d.hist[0], [t1,x1]=d.hist[d.hist.length-1];
+  const vel=t1>t0?(x1-x0)/((t1-t0)/1000):0; // px/s
+  const dec=.99, projected=spring.x+(vel/1000)*dec/(1-dec);
+  const idx=Math.max(0,Math.min(2,Math.round(projected/d.w)));
+  spring.v=vel;
+  select(ORDER[idx],{bounce:Math.abs(vel)>300,fromDrag:true});
+  suppressClick=true; setTimeout(()=>suppressClick=false,0);
+}
+let suppressClick=false;
+seg.addEventListener("pointerup",endDrag);
+seg.addEventListener("pointercancel",endDrag);
+seg.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{ if(!suppressClick) select(b.dataset.t); }));
+seg.addEventListener("keydown",e=>{
+  const i=ORDER.indexOf(tab);
+  if(e.key==="ArrowRight"&&i<2){ select(ORDER[i+1]); document.getElementById("tab-"+ORDER[i+1]).focus(); }
+  if(e.key==="ArrowLeft"&&i>0){ select(ORDER[i-1]); document.getElementById("tab-"+ORDER[i-1]).focus(); }
+});
+
+function select(t,{bounce=false,fromDrag=false}={}){
+  const changed=t!==tab; tab=t;
+  try{localStorage.setItem("sl-tab",tab)}catch(e){}
+  animateThumb(ORDER.indexOf(tab)*segW(),{bounce});
+  if(changed) render(true); else if(fromDrag) render(false);
+}
+
+/* ---------- Render ---------- */
+function render(animate){
+  const now=new Date();
+  document.body.className="t-"+tab;
+  ORDER.forEach(t=>{ const b=document.getElementById("tab-"+t); b.setAttribute("aria-selected",String(t===tab)); b.tabIndex=t===tab?0:-1; });
+
+  const pool=tab==="both"?GAMES:GAMES.filter(g=>g.team===tab);
+  const next=pool.find(g=>!over(g,now));
+  const left=pool.filter(g=>!over(g,now)).length;
+
+  const hero=document.getElementById("hero");
+  if(next){
+    const live=now>=next.start;
+    hero.className="hero "+next.team;
+    hero.innerHTML=`
+      <div class="top"><span class="label">${live?"Playing now":"Next game"}</span><span class="chip">${TEAMS[next.team].short}</span></div>
+      <div class="when">${DOWL[wd(next)]} ${next.da} ${MONL[next.mo-1]}<br>${next.t}</div>
+      <div class="vs">${next.home?`Home vs ${next.opp}`:`Away at ${next.opp}`}<br>${VENUE}</div>
+      <div class="countdown" id="cd"></div>
+      <div class="actions">
+        <a class="btn light" href="${calLink(next)}" target="_blank" rel="noopener">Add to Calendar</a>
+        <a class="btn glass" href="https://www.google.com/maps/search/?api=1&query=Ta%27+Qali+Basketball+Pavilion+Malta" target="_blank" rel="noopener">Directions</a>
+      </div>`;
+    tick(next);
+  } else {
+    hero.className="hero u16";
+    hero.innerHTML=`<div class="label">Season</div><div class="when">League games done</div><div class="vs">Check the official site for playoffs.</div>`;
+  }
+
+  document.getElementById("list-title").innerHTML=(tab==="both"?"All Games":TEAMS[tab].short)+`<small>${left} of ${pool.length} to go</small>`;
+  document.getElementById("toggle").textContent=filter==="all"?"Show Upcoming":"Show Past Games";
+
+  const shown=filter==="all"?pool:pool.filter(g=>!over(g,now));
+  const months=[];
+  shown.forEach(g=>{ const k=g.y*12+g.mo; let m=months[months.length-1]; if(!m||m.k!==k){ m={k,label:`${MONL[g.mo-1]} ${g.y}`,items:[]}; months.push(m);} m.items.push(g); });
+  let html="";
+  months.forEach(m=>{
+    html+=`<div class="group"><h3>${m.label}</h3><ol class="list">`;
+    m.items.forEach(g=>{
+      const past=over(g,now);
+      html+=`<li class="game ${g.team} ${g===next?"is-next":""} ${past?"is-past":""}">
+        <div class="date"><div class="dow">${DOW[wd(g)]}</div><div class="d">${g.da}</div></div>
+        <div class="info">
+          <div class="opp">${g.home?"vs":"at"} ${g.opp}</div>
+          <div class="meta">
+            ${tab==="both"?`<span class="pill team">${TEAMS[g.team].short}</span>`:""}
+            <span class="pill ${g.home?"home":"away"}">${g.home?"Home":"Away"}</span>
+            ${g===next?`<span class="pill next">Next</span>`:""}
+          </div>
+        </div>
+        <div class="right"><div class="time">${g.t}</div>${past?"":`<a class="cal" href="${calLink(g)}" target="_blank" rel="noopener" aria-label="Add ${MONS[g.mo-1]} ${g.da} game to calendar">+</a>`}</div>
+      </li>`;
+    });
+    html+=`</ol></div>`;
+  });
+  if(!shown.length) html=`<ol class="list"><li class="empty">No upcoming games</li></ol>`;
+  document.getElementById("list").innerHTML=html;
+
+  if(animate){ const c=document.getElementById("content"); c.classList.remove("fade"); void c.offsetWidth; c.classList.add("fade"); }
+}
+
+let timer;
+function tick(g){
+  clearInterval(timer);
+  const upd=()=>{
+    const el=document.getElementById("cd"); if(!el) return;
+    const ms=g.start-new Date();
+    if(ms<=0){ el.innerHTML=`<div class="cd"><strong>Live</strong><small>tip-off</small></div>`; return; }
+    const d=Math.floor(ms/864e5), hh=Math.floor(ms%864e5/36e5), m=Math.floor(ms%36e5/6e4);
+    el.innerHTML=[[d,d===1?"day":"days"],[hh,"hours"],[m,"min"]].map(([v,l])=>`<div class="cd"><strong>${v}</strong><small>${l}</small></div>`).join("");
+  };
+  upd(); timer=setInterval(upd,30000);
+}
+
+document.getElementById("toggle").addEventListener("click",()=>{
+  filter=filter==="all"?"up":"all"; try{localStorage.setItem("sl-filter",filter)}catch(e){} render(false);
+});
+
+/* Hairline under the chrome only once content scrolls beneath it */
+const chrome=document.getElementById("chrome");
+const onScroll=()=>chrome.classList.toggle("scrolled",chrome.getBoundingClientRect().top<=1 && scrollY>40);
+addEventListener("scroll",onScroll,{passive:true});
+addEventListener("resize",()=>{ cancelAnimationFrame(spring.raf); spring.v=0; setThumb(ORDER.indexOf(tab)*segW()); });
+
+setThumb(ORDER.indexOf(tab)*segW());
+render(false);
+</script>
+</body>
+</html>
