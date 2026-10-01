@@ -128,7 +128,24 @@ ol.list{list-style:none;margin:0;padding:0;background:var(--surface);border-radi
 .cal{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--cs);color:var(--c);text-decoration:none;font:500 1.125rem/1 var(--text);transition:transform .15s cubic-bezier(.2,.8,.2,1)}
 .cal:active{transform:scale(.88);transition-duration:.06s}
 .game.is-next{background:var(--cs)}
-.game.is-past{opacity:.42}
+.game.is-past .date,.game.is-past .info{opacity:.5}
+.game.is-past .time{opacity:.5}
+.score{display:flex;align-items:center;gap:6px;font:700 1.125rem/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.wl{display:grid;place-items:center;width:20px;height:20px;border-radius:6px;font:700 .6875rem/1 var(--text);color:#fff}
+.wl.w{background:#1f9d55} .wl.l{background:#d93a3a} .wl.d{background:var(--muted)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .wl.w{background:#2fb86a} }
+
+/* Last result card */
+.last{background:var(--surface);border-radius:20px;padding:16px 18px;display:grid;grid-template-columns:1fr auto;gap:4px 16px;align-items:center}
+.last.u16{--c:var(--blue)} .last.u19{--c:var(--orange)}
+.last .lbl{grid-column:1/-1;display:flex;gap:8px;align-items:center;font:600 .8125rem/1.2 var(--text);color:var(--muted)}
+.last .lbl .tm{color:var(--c);display:inline-flex;align-items:center;gap:5px}
+.last .lbl .tm::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c)}
+.last .big{font:800 clamp(2.25rem,9vw,3rem)/1 var(--display);letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin-top:6px}
+.last .big .them{color:var(--muted);font-weight:600}
+.last .who{font:500 .9375rem/1.3 var(--text);color:var(--muted)}
+.last .badge{grid-row:2/4;grid-column:2;font:700 .9375rem/1 var(--text);color:#fff;padding:10px 14px;border-radius:999px}
+.last .badge.w{background:#1f9d55} .last .badge.l{background:#d93a3a} .last .badge.d{background:var(--muted)}
 .empty{padding:18px;color:var(--muted);text-align:center}
 
 footer{color:var(--muted);font-size:.8125rem;line-height:1.55;padding-inline:4px;margin-top:6px}
@@ -136,7 +153,8 @@ footer a{color:var(--accent);text-decoration:none;font-weight:600}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 body.t-both a:focus-visible,body.t-both button:focus-visible{outline-color:var(--blue)}
 
-@media (max-width:400px){ .game{gap:12px;padding:11px 14px} .game + .game::before{left:70px} }
+@media (max-width:400px){ .game{gap:12px;padding:11px 14px} .game + .game::before{left:70px} .seg button{font-size:.8125rem;gap:5px;padding-inline:4px} }
+.seg button{white-space:nowrap}
 @media (prefers-reduced-motion:reduce){ #content.fade{animation:fadeonly .2s ease} @keyframes fadeonly{from{opacity:0}to{opacity:1}} .btn,.cal{transition:none} }
 @media (prefers-reduced-transparency:reduce){ .chrome{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none} }
 @media (prefers-contrast:more){ .seg{box-shadow:inset 0 0 0 1px var(--muted)} ol.list{box-shadow:0 0 0 1px var(--muted)} }
@@ -161,6 +179,7 @@ body.t-both a:focus-visible,body.t-both button:focus-visible{outline-color:var(-
   </div>
 
   <div id="content">
+    <section class="last" id="last" hidden></section>
     <section class="hero" id="hero" aria-live="polite"></section>
     <div class="group">
       <div class="lhead">
@@ -173,7 +192,7 @@ body.t-both a:focus-visible,body.t-both button:focus-visible{outline-color:var(-
       Times are Malta local time. Fixtures can move — check the official MBA schedules for
       <a href="https://maltabasketball.web.geniussports.com/?p=9&WHurl=%2Fcompetition%2F49763%2Fteam%2F165557%2Fschedule%3F" target="_blank" rel="noopener">U16 Boys</a> and
       <a href="https://maltabasketball.web.geniussports.com/competitions/?WHurl=%2Fcompetition%2F49770%2Fschedule" target="_blank" rel="noopener">U19 Men Div B</a>
-      before heading out. Last pulled 23 Sep 2026.
+      before heading out. Fixtures pulled 23 Sep 2026; scores added by hand.
     </footer>
   </div>
 </div>
@@ -212,11 +231,17 @@ const RAW = [
   ["u19","2027-03-25","20:00",false,"Athleta U19 Men"],
   ["u19","2027-03-31","10:30",true ,"Depiro Blue Mazda U19 Men"],
 ];
+/* ---------- RESULTS — add a line after each game: "team date": [Starlites score, opponent score] ---------- */
+const RESULTS = {
+  "u19 2026-10-01": [91, 56],   // vs Hibernians — W
+};
+
 const GAMES = RAW.map(([team,d,t,home,opp])=>{
   const [y,mo,da]=d.split("-").map(Number), [h,mi]=t.split(":").map(Number);
   // Malta: CEST (UTC+2) until 25 Oct 2026, CET (UTC+1) until 28 Mar 2027, then CEST
   const off=(d<"2026-10-25"||d>="2027-03-28")?2:1;
-  return {team,d,t,home,opp,y,mo,da,start:new Date(Date.UTC(y,mo-1,da,h-off,mi))};
+  const r=RESULTS[team+" "+d];
+  return {team,d,t,home,opp,y,mo,da,start:new Date(Date.UTC(y,mo-1,da,h-off,mi)),us:r?r[0]:null,them:r?r[1]:null};
 }).sort((a,b)=>a.start-b.start);
 
 const DOW=["SUN","MON","TUE","WED","THU","FRI","SAT"];
@@ -224,7 +249,8 @@ const DOWL=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturda
 const MONL=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const MONS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const wd=g=>new Date(Date.UTC(g.y,g.mo-1,g.da)).getUTCDay();
-const over=(g,now)=>g.start.getTime()+2*3600e3<=now.getTime();
+const over=(g,now)=>g.us!=null||g.start.getTime()+2*3600e3<=now.getTime();
+const res=g=>g.us>g.them?"w":g.us<g.them?"l":"d";
 
 function calLink(g){
   const p=n=>String(n).padStart(2,"0");
@@ -327,6 +353,19 @@ function render(animate){
   const next=pool.find(g=>!over(g,now));
   const left=pool.filter(g=>!over(g,now)).length;
 
+  const lastEl=document.getElementById("last");
+  const played=pool.filter(g=>g.us!=null);
+  const lg=played[played.length-1];
+  if(lg){
+    const r=res(lg);
+    lastEl.hidden=false; lastEl.className="last "+lg.team;
+    lastEl.innerHTML=`
+      <div class="lbl"><span>Last result</span>${tab==="both"?`<span class="tm">${TEAMS[lg.team].short}</span>`:""}<span>· ${DOW[wd(lg)].charAt(0)+DOW[wd(lg)].slice(1).toLowerCase()} ${lg.da} ${MONS[lg.mo-1]}</span></div>
+      <div class="big">${lg.us}<span class="them">–${lg.them}</span></div>
+      <div class="who">${lg.home?"vs":"at"} ${lg.opp}</div>
+      <div class="badge ${r}">${r==="w"?"Won":r==="l"?"Lost":"Draw"}</div>`;
+  } else lastEl.hidden=true;
+
   const hero=document.getElementById("hero");
   if(next){
     const live=now>=next.start;
@@ -367,7 +406,7 @@ function render(animate){
             ${g===next?`<span class="pill next">Next</span>`:""}
           </div>
         </div>
-        <div class="right"><div class="time">${g.t}</div>${past?"":`<a class="cal" href="${calLink(g)}" target="_blank" rel="noopener" aria-label="Add ${MONS[g.mo-1]} ${g.da} game to calendar">+</a>`}</div>
+        <div class="right">${g.us!=null?`<div class="score"><span class="wl ${res(g)}">${res(g).toUpperCase()}</span>${g.us}–${g.them}</div>`:`<div class="time">${g.t}</div>`}${past?"":`<a class="cal" href="${calLink(g)}" target="_blank" rel="noopener" aria-label="Add ${MONS[g.mo-1]} ${g.da} game to calendar">+</a>`}</div>
       </li>`;
     });
     html+=`</ol></div>`;
