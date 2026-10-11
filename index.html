@@ -73,7 +73,7 @@ h1 .b{color:var(--blue)} h1 .o{color:var(--orange)}
 
 /* Content */
 #content{display:flex;flex-direction:column;gap:26px;padding-top:14px}
-#content.fade{animation:fade .28s cubic-bezier(.2,.8,.2,1)}
+#content.fade,#list.fadein{animation:fade .28s cubic-bezier(.2,.8,.2,1)}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* Next game card */
@@ -101,11 +101,21 @@ h1 .b{color:var(--blue)} h1 .o{color:var(--orange)}
 .lhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-inline:4px}
 .lhead h2{font:700 1.375rem/1.1 var(--display);letter-spacing:-.025em;margin:0}
 .lhead h2 small{display:block;font:500 .8125rem/1.3 var(--text);letter-spacing:0;color:var(--muted);margin-top:3px}
-.toggle{font:600 .9375rem/1 var(--text);color:var(--accent);background:none;border:0;padding:6px 0;cursor:pointer;transition:opacity .1s}
-.toggle:active{opacity:.4;transition:none}
+.mini{display:inline-flex;background:var(--track);border-radius:9px;padding:2px;flex:none}
+.mini button{font:600 .8125rem/1 var(--text);border:0;background:transparent;color:var(--muted);padding:8px 12px;border-radius:7px;cursor:pointer;transition:background-color .2s,color .2s,box-shadow .2s}
+.mini button[aria-pressed="true"]{background:var(--thumb);color:var(--ink);box-shadow:var(--thumb-shadow)}
+.mini button:active{opacity:.55;transition:none}
+/* Season record */
+.record{background:var(--surface);border-radius:16px;display:grid;grid-template-columns:repeat(4,1fr);text-align:center;padding:14px 6px}
+.record div+div{border-left:.5px solid var(--sep)}
+.record strong{display:block;font:700 1.5rem/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.record small{font:500 .6875rem/1 var(--text);color:var(--muted);letter-spacing:.02em}
+.record .w strong{color:#1f9d55} .record .l strong{color:#d93a3a}
+.view-res .game.is-past .date,.view-res .game.is-past .info{opacity:1}
+.noscore{font:500 .8125rem/1 var(--text);color:var(--faint)}
 
 /* Inset grouped list */
-.group{display:flex;flex-direction:column;gap:6px}
+.group,#list{display:flex;flex-direction:column;gap:6px}
 .group h3{font:600 .8125rem/1 var(--text);color:var(--muted);margin:10px 0 2px;padding-inline:18px}
 ol.list{list-style:none;margin:0;padding:0;background:var(--surface);border-radius:16px;overflow:hidden}
 .game{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:12px 16px;position:relative;transition:background-color .2s}
@@ -155,7 +165,7 @@ body.t-both a:focus-visible,body.t-both button:focus-visible{outline-color:var(-
 
 @media (max-width:400px){ .game{gap:12px;padding:11px 14px} .game + .game::before{left:70px} .seg button{font-size:.8125rem;gap:5px;padding-inline:4px} }
 .seg button{white-space:nowrap}
-@media (prefers-reduced-motion:reduce){ #content.fade{animation:fadeonly .2s ease} @keyframes fadeonly{from{opacity:0}to{opacity:1}} .btn,.cal{transition:none} }
+@media (prefers-reduced-motion:reduce){ #content.fade,#list.fadein{animation:fadeonly .2s ease} @keyframes fadeonly{from{opacity:0}to{opacity:1}} .btn,.cal{transition:none} }
 @media (prefers-reduced-transparency:reduce){ .chrome{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none} }
 @media (prefers-contrast:more){ .seg{box-shadow:inset 0 0 0 1px var(--muted)} ol.list{box-shadow:0 0 0 1px var(--muted)} }
 </style>
@@ -184,7 +194,10 @@ body.t-both a:focus-visible,body.t-both button:focus-visible{outline-color:var(-
     <div class="group">
       <div class="lhead">
         <h2 id="list-title">Fixtures</h2>
-        <button type="button" class="toggle" id="toggle"></button>
+        <div class="mini" role="group" aria-label="View">
+          <button type="button" id="v-up" data-v="up">Fixtures</button>
+          <button type="button" id="v-res" data-v="res">Results</button>
+        </div>
       </div>
       <div id="list"></div>
     </div>
@@ -234,6 +247,8 @@ const RAW = [
 /* ---------- RESULTS — add a line after each game: "team date": [Starlites score, opponent score] ---------- */
 const RESULTS = {
   "u19 2026-10-01": [91, 56],   // vs Hibernians — W
+  "u19 2026-10-08": [51, 71],   // at Luxol St. Andrew's Bolt — L
+  "u16 2026-10-11": [88, 49],   // vs Depiro Mazda — W
 };
 
 const GAMES = RAW.map(([team,d,t,home,opp])=>{
@@ -264,7 +279,7 @@ function calLink(g){
 let tab="both", filter="up";
 try{
   const s=localStorage.getItem("sl-tab"); if(ORDER.includes(s)) tab=s;
-  const f=localStorage.getItem("sl-filter"); if(f==="up"||f==="all") filter=f;
+  const f=localStorage.getItem("sl-filter"); if(f==="up"||f==="res") filter=f;
 }catch(e){}
 const hsh=(location.hash||"").slice(1); if(ORDER.includes(hsh)) tab=hsh;
 
@@ -385,13 +400,28 @@ function render(animate){
     hero.innerHTML=`<div class="label">Season</div><div class="when">League games done</div><div class="vs">Check the official site for playoffs.</div>`;
   }
 
-  document.getElementById("list-title").innerHTML=(tab==="both"?"All Games":TEAMS[tab].short)+`<small>${left} of ${pool.length} to go</small>`;
-  document.getElementById("toggle").textContent=filter==="all"?"Show Upcoming":"Show Past Games";
+  const isRes=filter==="res";
+  const done=pool.filter(g=>over(g,now));
+  const scored=done.filter(g=>g.us!=null);
+  const W=scored.filter(g=>g.us>g.them).length, L=scored.filter(g=>g.us<g.them).length;
+  document.getElementById("list-title").innerHTML=(tab==="both"?"All Games":TEAMS[tab].short)+
+    `<small>${isRes?`${done.length} played · ${W}–${L}`:`${left} of ${pool.length} to go`}</small>`;
+  document.querySelectorAll(".mini button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===filter)));
+  document.getElementById("list").className=isRes?"view-res":"";
 
-  const shown=filter==="all"?pool:pool.filter(g=>!over(g,now));
+  const shown=isRes?done.slice().reverse():pool.filter(g=>!over(g,now));
   const months=[];
   shown.forEach(g=>{ const k=g.y*12+g.mo; let m=months[months.length-1]; if(!m||m.k!==k){ m={k,label:`${MONL[g.mo-1]} ${g.y}`,items:[]}; months.push(m);} m.items.push(g); });
   let html="";
+  if(isRes && scored.length){
+    const pf=scored.reduce((a,g)=>a+g.us,0), pa=scored.reduce((a,g)=>a+g.them,0), n=scored.length;
+    html+=`<div class="record">
+      <div class="w"><strong>${W}</strong><small>Won</small></div>
+      <div class="l"><strong>${L}</strong><small>Lost</small></div>
+      <div><strong>${Math.round(pf/n)}</strong><small>Avg scored</small></div>
+      <div><strong>${Math.round(pa/n)}</strong><small>Avg against</small></div>
+    </div>`;
+  }
   months.forEach(m=>{
     html+=`<div class="group"><h3>${m.label}</h3><ol class="list">`;
     m.items.forEach(g=>{
@@ -403,15 +433,15 @@ function render(animate){
           <div class="meta">
             ${tab==="both"?`<span class="pill team">${TEAMS[g.team].short}</span>`:""}
             <span class="pill ${g.home?"home":"away"}">${g.home?"Home":"Away"}</span>
-            ${g===next?`<span class="pill next">Next</span>`:""}
+            ${g===next&&!isRes?`<span class="pill next">Next</span>`:""}
           </div>
         </div>
-        <div class="right">${g.us!=null?`<div class="score"><span class="wl ${res(g)}">${res(g).toUpperCase()}</span>${g.us}–${g.them}</div>`:`<div class="time">${g.t}</div>`}${past?"":`<a class="cal" href="${calLink(g)}" target="_blank" rel="noopener" aria-label="Add ${MONS[g.mo-1]} ${g.da} game to calendar">+</a>`}</div>
+        <div class="right">${g.us!=null?`<div class="score"><span class="wl ${res(g)}">${res(g).toUpperCase()}</span>${g.us}–${g.them}</div>`:(past?`<div class="noscore">No score yet</div>`:`<div class="time">${g.t}</div>`)}${past?"":`<a class="cal" href="${calLink(g)}" target="_blank" rel="noopener" aria-label="Add ${MONS[g.mo-1]} ${g.da} game to calendar">+</a>`}</div>
       </li>`;
     });
     html+=`</ol></div>`;
   });
-  if(!shown.length) html=`<ol class="list"><li class="empty">No upcoming games</li></ol>`;
+  if(!shown.length) html=`<ol class="list"><li class="empty">${isRes?"No games played yet":"No upcoming games"}</li></ol>`;
   document.getElementById("list").innerHTML=html;
 
   if(animate){ const c=document.getElementById("content"); c.classList.remove("fade"); void c.offsetWidth; c.classList.add("fade"); }
@@ -430,9 +460,13 @@ function tick(g){
   upd(); timer=setInterval(upd,30000);
 }
 
-document.getElementById("toggle").addEventListener("click",()=>{
-  filter=filter==="all"?"up":"all"; try{localStorage.setItem("sl-filter",filter)}catch(e){} render(false);
-});
+document.querySelectorAll(".mini button").forEach(b=>b.addEventListener("click",()=>{
+  if(filter===b.dataset.v) return;
+  filter=b.dataset.v; try{localStorage.setItem("sl-filter",filter)}catch(e){}
+  render(false);
+  const l=document.getElementById("list"); l.classList.remove("fadein"); void l.offsetWidth; l.classList.add("fadein");
+}));
+if(location.hash==="#results") filter="res";
 
 /* Hairline under the chrome only once content scrolls beneath it */
 const chrome=document.getElementById("chrome");
