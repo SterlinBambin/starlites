@@ -165,6 +165,25 @@ body.t-both a:focus-visible,body.t-both button:focus-visible{outline-color:var(-
 
 @media (max-width:400px){ .game{gap:12px;padding:11px 14px} .game + .game::before{left:70px} .seg button{font-size:.8125rem;gap:5px;padding-inline:4px} }
 .seg button{white-space:nowrap}
+/* Phone: keep the next-game card above the fold */
+@media (max-width:520px){
+  header{padding-block:14px 8px}
+  .eyebrow{font-size:.75rem}
+  h1{font-size:1.75rem;line-height:1.05;letter-spacing:-.03em;margin-top:4px}
+  .sub{display:none}
+  .chrome{padding-block:6px 8px}
+  #content{gap:18px;padding-top:6px}
+  #content > .last{margin-bottom:-8px}
+  .last{padding:12px 16px;border-radius:18px}
+  .last .big{font-size:2.25rem;margin-top:4px}
+  .last .badge{padding:8px 12px;font-size:.875rem}
+  .hero{padding:18px 18px 16px;gap:10px;border-radius:20px}
+  .hero .when{font-size:1.625rem}
+  .hero .vs{font-size:1rem}
+  .cd{padding:8px 6px 7px;border-radius:12px}
+  .cd strong{font-size:1.5rem}
+  .btn{padding:11px 15px}
+}
 @media (prefers-reduced-motion:reduce){ #content.fade,#list.fadein{animation:fadeonly .2s ease} @keyframes fadeonly{from{opacity:0}to{opacity:1}} .btn,.cal{transition:none} }
 @media (prefers-reduced-transparency:reduce){ .chrome{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none} }
 @media (prefers-contrast:more){ .seg{box-shadow:inset 0 0 0 1px var(--muted)} ol.list{box-shadow:0 0 0 1px var(--muted)} }
