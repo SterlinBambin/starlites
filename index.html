@@ -268,6 +268,7 @@ const RESULTS = {
   "u19 2026-10-01": [91, 56],   // vs Hibernians — W
   "u19 2026-10-08": [51, 71],   // at Luxol St. Andrew's Bolt — L
   "u16 2026-10-11": [88, 49],   // vs Depiro Mazda — W
+  "u19 2026-10-15": [84, 86],   // vs Luxol Vjola Bolt — L
 };
 
 const GAMES = RAW.map(([team,d,t,home,opp])=>{
@@ -424,7 +425,7 @@ function render(animate){
   const scored=done.filter(g=>g.us!=null);
   const W=scored.filter(g=>g.us>g.them).length, L=scored.filter(g=>g.us<g.them).length;
   document.getElementById("list-title").innerHTML=(tab==="both"?"All Games":TEAMS[tab].short)+
-    `<small>${isRes?`${done.length} played · ${W}–${L}`:`${left} of ${pool.length} to go`}</small>`;
+    `<small>${isRes?`${done.length} played · ${W}–${L}${scored.length-W-L?`–${scored.length-W-L}`:""}`:`${left} of ${pool.length} to go`}</small>`;
   document.querySelectorAll(".mini button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===filter)));
   document.getElementById("list").className=isRes?"view-res":"";
 
